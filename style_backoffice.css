@@ -1,0 +1,44 @@
+.login-section {
+    padding: 4rem 0;
+    text-align: center;
+    margin-top: 10rem;
+}
+
+.login-form {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+input[type=email],
+input[type=password] {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn {
+    padding: 10px 22px;
+    background: var(--main-color);
+    color: var(--bg-color);
+    font-weight: 400;
+    border-radius: 8px;
+    border: none;
+}
+
+.btn:hover {
+    background: #fd052f;
+}
