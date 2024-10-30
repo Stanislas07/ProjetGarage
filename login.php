@@ -28,4 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Utilisateur non trouvé.";
     }
 }
+// Fermer la connexion
+$conn->close();
 ?>
