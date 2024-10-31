@@ -11,19 +11,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    <!-- Barre de navigation -->
-    <header>
-        <div class="nav container">
-            <i class='bx bx-menu' id="menu-icon"></i>
-            <a href="#" class="logo">Le<span>garage</span></a>
-            <ul class="navbar">
-                <li><a href="#home" class="active">Accueil</a></li>
-                <li><a href="#cars">Voiture d'occasion</a></li>
-                <li><a href="#about">A propos de</a></li>
-            </ul>
-            <a href="formlogin.html" class="login">Se connecter</a>
-        </div>
-    </header>
+    <?php require_once 'header.html';?>
 
     <!-- Accueil -->
     <section class="home" id="home">
@@ -51,7 +39,7 @@
                 <select name="marque" id="marque-select" class="form-select" onchange="fetchModels()">
                     <option value=""><p>Sélectionner une marque</p></option>
                     <?php
-                        include_once "connexion.php";
+                        include_once "connexionBDD.php";
                         $sql_marques = "SELECT * FROM Marque ORDER BY nom_marque";
                         $result_marques = $conn->query($sql_marques);
                         if ($result_marques->num_rows > 0) {
@@ -161,9 +149,6 @@
                     $sql .= " WHERE " . implode(" AND ", $conditions);
                 }
 
-                // Ajouter un tri par défaut
-                $sql .= " ORDER BY Marque.nom_marque";
-
                 // Exécution de la requête
                 $result_voitures = $conn->query($sql);
 
@@ -187,45 +172,9 @@
         </div>
     </section>
 
-    <!-- Pied de page -->
-    <section class="footer">
-        <div class="footer-container container">
-            <div class="footer-box">
-                <a href="#" class="logo">Le<span>garage</span></a>
-                <div class="social">
-                    <a href="#"><i class="bx bxl-instagram"></i></a>
-                    <a href="#"><i class="bx bxl-linkedin"></i></a>
-                </div>
-            </div>
-            <div class="footer-box">
-                <h3>Page</h3>
-                <a href="#">Accueil</a>
-                <a href="#">Voiture</a>
-                <a href="#">Parts</a>
-                <a href="#">Ventes</a>
-            </div>
-            <div class="footer-box">
-                <h3>Legal</h3>
-                <a href="#">Privé</a>
-                <a href="#">Politique de remboursements</a>
-                <a href="#">Politique de cookie</a>
-            </div>
-            <div class="footer-box">
-                <h3>Contact</h3>
-                <p>France</p>
-                <p>Nouvelle-Calédonie</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Copyright -->
-    <div class="copyright">
-        <p>&#169; Tous les droits sont réservés pour Le garage</p>
-    </div>
+    <?php require_once 'footer.html'; ?>
 
     <!-- Lien vers JS -->
     <script src="main.js"></script>
-
-    </script>
 </body>
 </html>
