@@ -5,7 +5,7 @@ include "connexion.php";
 $id_marque = isset($_GET['marque']) ? validate($_GET['marque']) : '';
 
 // Requête pour récupérer les modèles correspondant à la marque
-$sql = "SELECT id_modele, nom_modele FROM Modele WHERE id_marque = ?";
+$sql = "SELECT id_modele, nom_modele FROM modele WHERE id_marque = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('', $id_marque);
 $stmt->execute();
