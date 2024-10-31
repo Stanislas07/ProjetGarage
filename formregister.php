@@ -20,7 +20,7 @@
                 <li><a href="index.php#cars">Voiture d'occasion</a></li>
                 <li><a href="index.php#about">A propos de</a></li>
             </ul>
-            <a href="formlogin.html" class="login">Se connecter</a>
+            <a href="formlogin.php" class="login">Se connecter</a>
         </div>
     </header>
 

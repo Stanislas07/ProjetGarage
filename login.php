@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (password_verify($password, $user['mot_de_passe'])) {
             $_SESSION['user_id'] = $user['id_employe'];
             $_SESSION['role'] = $user['role'];
-            header("Location: admin.html"); // Rediriger vers la page admin
+            header("Location: admin.php"); // Rediriger vers la page admin
             exit();
         } else {
             header("Location: formlogin.html"); // Rediriger vers la page de connexion si non autorisé
@@ -28,6 +28,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Utilisateur non trouvé.";
     }
 }
-// Fermer la connexion
-$conn->close();
 ?>
