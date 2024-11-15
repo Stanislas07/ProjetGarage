@@ -1,0 +1,37 @@
+#main_title {
+    background: #383a3a;
+    color: #fff;
+    padding: 50px;
+    letter-spacing: 2px;
+    font-weight: 500;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; /* Deux colonnes de taille égale */
+    gap: 20px; /* Espacement entre les éléments */
+    align-items: center;
+    text-align: center;
+}
+
+#main_title h1{
+    padding: 10px;
+}
+
+#main_title .btn-warning {
+    padding: 5px;
+}
+
+.img-backoffice {
+    width: 15em;
+    height: 10em;
+}
+
+.box1 h2 {
+    float: left;
+}
+
+.box1 button {
+    float: right;
+}
+
+.container {
+    margin-top: 50px;
+}

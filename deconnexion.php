@@ -1,6 +1,6 @@
 <?php
 session_start();
 session_destroy();
-header("Location: formlogin.php");
+header("Location: form/formlogin.html");
 exit();
 ?>

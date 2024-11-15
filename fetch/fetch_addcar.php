@@ -106,14 +106,36 @@ $id_modele = checkAndInsertModele($conn, 'Modele', 'nom_modele', $modele, $id_ma
         die("Erreur lors de l'insertion dans Prix : " . $conn->error);
     }
 
+    // Récupére l'ID du carburant
+    $query_carburant = "SELECT id_carburant FROM Carburant WHERE type_carburant = '$carburant'";
+    $result_carburant = mysqli_query($conn, $query_carburant);
+    
+    if ($result_carburant && mysqli_num_rows($result_carburant) > 0) {
+        $carburant_row = mysqli_fetch_assoc($result_carburant);
+        $id_carburant = $carburant_row['id_carburant'];
+    } else {
+        die("Erreur : Le carburant sélectionné n'existe pas dans la base de données.");
+    }
+
+    // Récupére l'ID de la transmission
+    $query_transmission = "SELECT id_transmission FROM Transmission WHERE type_transmission = '$transmission'";
+    $result_transmission = mysqli_query($conn, $query_transmission);
+    
+    if ($result_transmission && mysqli_num_rows($result_transmission) > 0) {
+        $transmission_row = mysqli_fetch_assoc($result_transmission);
+        $id_transmission = $transmission_row['id_transmission'];
+    } else {
+        die("Erreur : La transmission sélectionné n'existe pas dans la base de données.");
+    }
+
     // Insertion dans la table Voiture
     $query_voiture = "INSERT INTO Voiture (id_marque, id_modele, id_couleur, id_carburant, id_transmission, id_kilometrage, id_prix, date_arrivee, description, image_url) 
-    VALUES ('$id_marque', '$id_modele', '$id_couleur', '$carburant', '$transmission', '$id_kilometrage', '$id_prix', '$date_arrivee', '$description', '$target_file')";
+    VALUES ('$id_marque', '$id_modele', '$id_couleur', '$id_carburant', '$id_transmission', '$id_kilometrage', '$id_prix', '$date_arrivee', '$description', '$target_file')";
     
     if ($conn->query($query_voiture) === TRUE) {
-        header("Location: ../admin.php?messagesucces=Voiture ajoutée avec succès");
+        header("Location: ../admin.php?add_succes=Voiture ajoutée avec succès");
     } else {
-        header("Location: ../admin.php?messageerror=Un problème est survenu lors de l'enregistrement des données");
+        header("Location: ../admin.php?add_error=Un problème est survenu lors de l'enregistrement des données");
     }
 
     $conn->close();

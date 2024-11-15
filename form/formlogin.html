@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage</title>
+    <link rel="stylesheet" href="../style/style_log_reg.css">
+    <link rel="stylesheet" href="../style/style.css">
+</head>
+<body>
+    <!-- Barre de navigation -->
+    <header>
+        <h2 class="logo"><span>Le </span>garage</h2>
+        <nav class="navbar">
+            <a class="navbar-a" href="../main.php#home">Accueil</a>
+            <a class="navbar-a" href="../main.php#cars">Catalogue</a>
+            <button class="btnLogin-popup"><a href="formlogin.html">Connexion</a></button>
+        </nav>
+    </header>
+
+    <!-- Box de connexion pour accéder à la partie backoffice-->
+    <footer>
+    <div class="wrapper">
+
+        <div class="form-box login">
+            <h2>Connexion</h2>
+            <form action="../fetch/fetch_login.php" method="POST">
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="mail-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="userName" required placeholder=" ">
+                    <label>Identifiant</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                    </span>
+                    <input type="password" name="password" required placeholder=" ">
+                    <label>Mot de passe </label>
+                </div>
+                    <button type="submit" class="btn"> Se connecter</button>
+                <div class="login-register">
+                    <p>Vous n'avez pas de compte ? <a href="#" class="register-link">Créer un compte</a></p>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Box d'inscription pour se créer un compte -->
+        <div class="form-box register">
+            <h2>Créer un compte</h2>
+            <form action="../fetch/fetch_register.php" method="POST">
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="name" required placeholder=" ">
+                    <label>Nom</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="firstName"required placeholder=" ">
+                    <label>Prénom</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="mail-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="userName"required placeholder=" ">
+                    <label>Identifiant</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                    </span>
+                    <input type="password" name="password" required placeholder=" ">
+                    <label>Mot de passe </label>
+                </div>
+                <button type="submit" class="btn">Créer</button>
+                <div class="login-register">
+                    <p>Vous avez un compte ? <a href="#" class="login-link">Connexion</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</footer>
+
+    
+
+    <script src="../script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>
