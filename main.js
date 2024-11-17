@@ -11,16 +11,27 @@ function fetchModels() {
     const modeleSelect = document.getElementById('modele-select');
     const selectedMarque = marqueSelect.value;
 
-    // Fetch les modèles en relation avec le marque selectionné
+    if (!selectedMarque) {
+        modeleSelect.innerHTML = '<option value="">Sélectionner un modèle</option>';
+        return;
+    }
+
     fetch(`fetch/fetch_models.php?marque=${selectedMarque}`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des modèles.');
+            }
+            return response.json();
+        })
         .then(data => {
-            modeleSelect.innerHTML = '<option value="">Selectionner un modèle</option>';
+            modeleSelect.innerHTML = '<option value="">Sélectionner un modèle</option>';
             data.forEach(model => {
                 modeleSelect.innerHTML += `<option value="${model.id_modele}">${model.nom_modele}</option>`;
             });
-        });
+        })
+        .catch(error => console.error(error));
 }
+
 //renvoie le montant du prix de l'input de type range
 function updatePriceValue(value) {
     document.getElementById('prix-value').innerText = '€' + value;
