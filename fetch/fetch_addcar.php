@@ -55,7 +55,7 @@ function checkAndInsert($conn, $table, $column, $value, $id) {
         if ($conn->query($insert_query) === TRUE) {
             return $conn->insert_id;
         } else {
-            die("Erreur d'insertion dans $table : " . $conn->error);
+            header("Location: ../admin.php?add_error=Erreur d'insertion dans $table" . $conn->error);
         }
     }
 }
@@ -78,7 +78,7 @@ function checkAndInsertModele($conn, $table, $column, $value, $id_marque) {
         if ($conn->query($insert_query) === TRUE) {
             return $conn->insert_id;
         } else {
-            die("Erreur d'insertion dans $table : " . $conn->error);
+            header("Location: ../admin.php?add_error=Erreur d'insertion dans $table" . $conn->error);
         }
     }
 }
@@ -86,25 +86,10 @@ function checkAndInsertModele($conn, $table, $column, $value, $id_marque) {
 // Utilisation de la fonction checkAndInsert pour obtenir ou insérer les IDs
 $id_marque = checkAndInsert($conn, 'Marque', 'nom_marque', $marque, 'id_marque');
 $id_modele = checkAndInsertModele($conn, 'Modele', 'nom_modele', $modele, $id_marque);
-
-
-    $id_couleur = checkAndInsert($conn, 'Couleur', 'nom_couleur', $couleur, 'id_couleur');
-
-    // Insertion dans la table Kilometrage
-    $query_kilometrage = "INSERT INTO Kilometrage (valeur_kilometrage) VALUES ('$kilometrage')";
-    if ($conn->query($query_kilometrage) === TRUE) {
-        $id_kilometrage = $conn->insert_id;
-    } else {
-        die("Erreur lors de l'insertion dans Kilometrage : " . $conn->error);
-    }
-
-    // Insertion dans la table Prix
-    $query_prix = "INSERT INTO Prix (valeur_prix) VALUES ('$prix')";
-    if ($conn->query($query_prix) === TRUE) {
-        $id_prix = $conn->insert_id;
-    } else {
-        die("Erreur lors de l'insertion dans Prix : " . $conn->error);
-    }
+$id_couleur = checkAndInsert($conn, 'Couleur', 'nom_couleur', $couleur, 'id_couleur');
+$id_kilometrage = checkAndInsert($conn, 'Kilometrage', 'valeur_kilometrage', $kilometrage, 'id_kilometrage');
+$id_prix = checkAndInsert($conn, 'Prix', 'valeur_prix', $prix, 'id_prix');
+    
 
     // Récupére l'ID du carburant
     $query_carburant = "SELECT id_carburant FROM Carburant WHERE type_carburant = '$carburant'";
@@ -114,7 +99,7 @@ $id_modele = checkAndInsertModele($conn, 'Modele', 'nom_modele', $modele, $id_ma
         $carburant_row = mysqli_fetch_assoc($result_carburant);
         $id_carburant = $carburant_row['id_carburant'];
     } else {
-        die("Erreur : Le carburant sélectionné n'existe pas dans la base de données.");
+        header("Location: ../admin.php?add_error=Le carburant sélectionné n'existe pas dans la base de données." . $conn->error);
     }
 
     // Récupére l'ID de la transmission
@@ -125,7 +110,7 @@ $id_modele = checkAndInsertModele($conn, 'Modele', 'nom_modele', $modele, $id_ma
         $transmission_row = mysqli_fetch_assoc($result_transmission);
         $id_transmission = $transmission_row['id_transmission'];
     } else {
-        die("Erreur : La transmission sélectionné n'existe pas dans la base de données.");
+        header("Location: ../admin.php?add_error=Erreur : Le type de transmission sélectionné n'existe pas dans la base de données." . $conn->error);
     }
 
     // Insertion dans la table Voiture

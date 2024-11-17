@@ -9,7 +9,7 @@ include('header.php');
 </div>
 <?php } ?>
 <?php if(isset($_GET['add_error'])) { ?>
-<div class='alert alert-success' role='alert'>
+<div class='alert alert-danger' role='alert'>
     <h4 class='alert-heading'><?php echo $_GET['add_error']; ?></h4>
     <p>Assurez vous que le formulaire a été correctement rempli</p>
 </div>"
@@ -21,7 +21,7 @@ include('header.php');
 </div>
 <?php } ?>
 <?php if(isset($_GET['update_error'])) { ?>
-<div class='alert alert-success' role='alert'>
+<div class='alert alert-danger' role='alert'>
     <h4 class='alert-heading'><?php echo $_GET['update_error']; ?></h4>
     <p>Veuille réessayer avec les bonnes informations</p>
 </div>"
@@ -33,7 +33,7 @@ include('header.php');
 </div>
 <?php } ?>
 <?php if(isset($_GET['delete_error'])) { ?>
-<div class='alert alert-success' role='alert'>
+<div class='alert alert-danger' role='alert'>
     <h4 class='alert-heading'><?php echo $_GET['delete_error']; ?></h4>
     <p>Veuillez réessayer</p>
 </div>"
@@ -199,18 +199,15 @@ include('header.php');
                         <div class="form-group">
                             <label for="carburant">Carburant</label>
                             <select name="carburant" id="carburant" class="form-control" required>
-                                <?php
-                        $query_carburant="SELECT * FROM Carburant ORDER BY type_carburant";
-                        $result_carburant=mysqli_query($conn, $query_carburant);
-                        if(!$result_carburant){
-                            die("Aucun carburant".mysqli_error());
-                        } else {
-                            while($row = mysqli_fetch_assoc($result_carburant)){
-                                echo "<option value='{$row['id_carburant']}'>{$row['type_carburant']}</option>";
-                            }
-                        }
-                    ?>
-                            </select>
+    <?php
+        $query_carburant = "SELECT * FROM carburant ORDER BY type_carburant";
+        $result_carburant = mysqli_query($conn, $query_carburant);
+        while ($row = mysqli_fetch_assoc($result_carburant)) {
+            echo "<option value='{$row['type_carburant']}'>{$row['type_carburant']}</option>";
+        }
+    ?>
+</select>
+
                         </div>
 
                         <div class="form-group">
@@ -223,7 +220,7 @@ include('header.php');
                             die("Aucune transmission".mysqli_error());
                         } else {
                             while($row = mysqli_fetch_assoc($result_transmission)){
-                                echo "<option value='{$row['id_transmission']}'>{$row['type_transmission']}</option>";
+                                echo "<option value='{$row['type_transmission']}'>{$row['type_transmission']}</option>";
                             }
                         }
                     ?>
