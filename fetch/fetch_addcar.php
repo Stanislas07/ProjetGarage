@@ -13,117 +13,112 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $date_arrivee = $_POST['date_arrivee'];
     $description = $_POST['description'];
 
-    // Vérifier si une image a été téléchargée
+    // Vérification et upload de l'image
+    $image_url = null;
     if (isset($_FILES['image_url']) && $_FILES['image_url']['error'] == 0) {
-        $image_url = $_FILES['image_url']['name'];
-    } else {
-        $image_url = null; // Ou une valeur par défaut
-    }
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        $maxFileSize = 2 * 1024 * 1024; // 2 Mo
 
-    // Sécuriser les entrées pour éviter les injections SQL
-    $marque = mysqli_real_escape_string($conn, $marque);
-    $modele = mysqli_real_escape_string($conn, $modele);
-    $couleur = mysqli_real_escape_string($conn, $couleur);
-    $kilometrage = mysqli_real_escape_string($conn, $kilometrage);
-    $prix = mysqli_real_escape_string($conn, $prix);
-    $date_arrivee = mysqli_real_escape_string($conn, $date_arrivee);
-    $description = mysqli_real_escape_string($conn, $description);
+        if (!in_array($_FILES['image_url']['type'], $allowedTypes)) {
+            header("Location: ../admin.php?add_error=Format d'image non pris en charge.");
+            exit;
+        }
 
-    // Déplacer l'image téléchargée si elle existe
-    if ($image_url !== null) {
+        if ($_FILES['image_url']['size'] > $maxFileSize) {
+            header("Location: ../admin.php?add_error=Fichier trop volumineux (max : 2 Mo).");
+            exit;
+        }
+
         $target_dir = __DIR__ . "/../img/";
         $target_file = $target_dir . uniqid() . "_" . basename($_FILES["image_url"]["name"]);
-        move_uploaded_file($_FILES["image_url"]["tmp_name"], $target_file);
+        if (move_uploaded_file($_FILES["image_url"]["tmp_name"], $target_file)) {
+            $image_url = str_replace(__DIR__ . '/../', '', $target_file);
+        } else {
+            header("Location: ../admin.php?add_error=Erreur lors du téléchargement de l'image.");
+            exit;
+        }
     }
 
     // Fonction pour vérifier et insérer dans une table
-function checkAndInsert($conn, $table, $column, $value, $id) {
-    // Sécuriser la valeur
-    $value = mysqli_real_escape_string($conn, $value);
+    function checkAndInsert($conn, $table, $column, $value, $id) {
+        $value = mysqli_real_escape_string($conn, $value);
+        $query = "SELECT $id FROM $table WHERE $column = '$value'";
+        $result = $conn->query($query);
 
-    // Vérifier si la valeur existe déjà dans la table
-    $query = "SELECT $id FROM $table WHERE $column = '$value'";  // Assurez-vous que 'id_marque' existe dans la table
-    $result = $conn->query($query);
-
-    if ($result->num_rows > 0) {
-        // Si la valeur existe, retourner l'ID
-        $row = $result->fetch_assoc();
-        return $row[$id];  // Assurez-vous que l'ID retourné est correct
-    } else {
-        // Sinon, insérer la nouvelle valeur et récupérer l'ID
-        $insert_query = "INSERT INTO $table ($column) VALUES ('$value')";
-        if ($conn->query($insert_query) === TRUE) {
-            return $conn->insert_id;
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row[$id];
         } else {
-            header("Location: ../admin.php?add_error=Erreur d'insertion dans $table" . $conn->error);
+            $insert_query = "INSERT INTO $table ($column) VALUES ('$value')";
+            if ($conn->query($insert_query) === TRUE) {
+                return $conn->insert_id;
+            } else {
+                die("Erreur d'insertion dans $table : " . $conn->error);
+            }
         }
     }
-}
 
-// Fonction pour vérifier et insérer dans la table Modele avec l'id_marque
-function checkAndInsertModele($conn, $table, $column, $value, $id_marque) {
-    $value = mysqli_real_escape_string($conn, $value);
-    $id_marque = mysqli_real_escape_string($conn, $id_marque);
+    // Fonction pour vérifier et insérer un modèle lié à une marque
+    function checkAndInsertModele($conn, $table, $column, $value, $id_marque) {
+        $value = mysqli_real_escape_string($conn, $value);
+        $id_marque = mysqli_real_escape_string($conn, $id_marque);
+        $query = "SELECT id_modele FROM $table WHERE $column = '$value' AND id_marque = '$id_marque'";
+        $result = $conn->query($query);
 
-    // Vérifiez si le modèle existe déjà avec cet id_marque
-    $query = "SELECT id_modele FROM $table WHERE $column = '$value' AND id_marque = '$id_marque'";
-    $result = $conn->query($query);
-
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        return $row['id_modele'];
-    } else {
-        // Ajoutez le modèle avec id_marque
-        $insert_query = "INSERT INTO $table ($column, id_marque) VALUES ('$value', '$id_marque')";
-        if ($conn->query($insert_query) === TRUE) {
-            return $conn->insert_id;
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['id_modele'];
         } else {
-            header("Location: ../admin.php?add_error=Erreur d'insertion dans $table" . $conn->error);
+            $insert_query = "INSERT INTO $table ($column, id_marque) VALUES ('$value', '$id_marque')";
+            if ($conn->query($insert_query) === TRUE) {
+                return $conn->insert_id;
+            } else {
+                die("Erreur d'insertion dans $table : " . $conn->error);
+            }
         }
     }
-}
 
-// Utilisation de la fonction checkAndInsert pour obtenir ou insérer les IDs
-$id_marque = checkAndInsert($conn, 'Marque', 'nom_marque', $marque, 'id_marque');
-$id_modele = checkAndInsertModele($conn, 'Modele', 'nom_modele', $modele, $id_marque);
-$id_couleur = checkAndInsert($conn, 'Couleur', 'nom_couleur', $couleur, 'id_couleur');
-$id_kilometrage = checkAndInsert($conn, 'Kilometrage', 'valeur_kilometrage', $kilometrage, 'id_kilometrage');
-$id_prix = checkAndInsert($conn, 'Prix', 'valeur_prix', $prix, 'id_prix');
-    
+    // Obtenir ou insérer les IDs nécessaires
+    $id_marque = checkAndInsert($conn, 'Marque', 'nom_marque', $marque, 'id_marque');
+    $id_modele = checkAndInsertModele($conn, 'Modele', 'nom_modele', $modele, $id_marque);
+    $id_couleur = checkAndInsert($conn, 'Couleur', 'nom_couleur', $couleur, 'id_couleur');
+    $id_kilometrage = checkAndInsert($conn, 'Kilometrage', 'valeur_kilometrage', $kilometrage, 'id_kilometrage');
+    $id_prix = checkAndInsert($conn, 'Prix', 'valeur_prix', $prix, 'id_prix');
 
-    // Récupére l'ID du carburant
-    $query_carburant = "SELECT id_carburant FROM Carburant WHERE type_carburant = '$carburant'";
-    $result_carburant = mysqli_query($conn, $query_carburant);
-    
-    if ($result_carburant && mysqli_num_rows($result_carburant) > 0) {
-        $carburant_row = mysqli_fetch_assoc($result_carburant);
-        $id_carburant = $carburant_row['id_carburant'];
-    } else {
-        header("Location: ../admin.php?add_error=Le carburant sélectionné n'existe pas dans la base de données." . $conn->error);
-    }
+    // Récupérer les IDs pour carburant et transmission
+    $id_carburant = checkAndInsert($conn, 'Carburant', 'type_carburant', $carburant, 'id_carburant');
+    $id_transmission = checkAndInsert($conn, 'Transmission', 'type_transmission', $transmission, 'id_transmission');
 
-    // Récupére l'ID de la transmission
-    $query_transmission = "SELECT id_transmission FROM Transmission WHERE type_transmission = '$transmission'";
-    $result_transmission = mysqli_query($conn, $query_transmission);
-    
-    if ($result_transmission && mysqli_num_rows($result_transmission) > 0) {
-        $transmission_row = mysqli_fetch_assoc($result_transmission);
-        $id_transmission = $transmission_row['id_transmission'];
-    } else {
-        header("Location: ../admin.php?add_error=Erreur : Le type de transmission sélectionné n'existe pas dans la base de données." . $conn->error);
+    // Vérifier que toutes les valeurs sont valides
+    if (!$id_marque || !$id_modele || !$id_couleur || !$id_carburant || !$id_transmission || !$id_kilometrage || !$id_prix) {
+        header("Location: ../admin.php?add_error=Une ou plusieurs valeurs du formulaire sont invalides.");
+        exit;
     }
 
     // Insertion dans la table Voiture
     $query_voiture = "INSERT INTO Voiture (id_marque, id_modele, id_couleur, id_carburant, id_transmission, id_kilometrage, id_prix, date_arrivee, description, image_url) 
-    VALUES ('$id_marque', '$id_modele', '$id_couleur', '$id_carburant', '$id_transmission', '$id_kilometrage', '$id_prix', '$date_arrivee', '$description', '$target_file')";
-    
-    if ($conn->query($query_voiture) === TRUE) {
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($query_voiture);
+    $stmt->bind_param(
+        "iiiiiiisss",
+        $id_marque,
+        $id_modele,
+        $id_couleur,
+        $id_carburant,
+        $id_transmission,
+        $id_kilometrage,
+        $id_prix,
+        $date_arrivee,
+        $description,
+        $image_url
+    );
+
+    if ($stmt->execute()) {
         header("Location: ../admin.php?add_succes=Voiture ajoutée avec succès");
     } else {
-        header("Location: ../admin.php?add_error=Un problème est survenu lors de l'enregistrement des données");
+        header("Location: ../admin.php?add_error=Erreur lors de l'ajout : " . $stmt->error);
     }
-
+    $stmt->close();
     $conn->close();
 }
-
 ?>
