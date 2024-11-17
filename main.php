@@ -89,7 +89,7 @@
             </div>
             <div class="col-md-5">
                 <button type="submit" class="btn container">Filtrer</button>
-                <a href="index.php" class="btn container">Reset</a>
+                <a href="main.php" class="btn container">Reset</a>
             </div>
         </div>
     </form>
