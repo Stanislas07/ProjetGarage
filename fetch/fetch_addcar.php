@@ -30,15 +30,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $target_dir = __DIR__ . "/../img/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true); // Créer le répertoire si nécessaire
+        }
         $target_file = $target_dir . uniqid() . "_" . basename($_FILES["image_url"]["name"]);
         if (move_uploaded_file($_FILES["image_url"]["tmp_name"], $target_file)) {
-            $image_url = str_replace(__DIR__ . '/../', '', $target_file);
+            $image_url = 'img/' . basename($target_file);
         } else {
             header("Location: ../admin.php?add_error=Erreur lors du téléchargement de l'image.");
             exit;
         }
     }
-
+    
     // Fonction pour vérifier et insérer dans une table
     function checkAndInsert($conn, $table, $column, $value, $id) {
         $value = mysqli_real_escape_string($conn, $value);

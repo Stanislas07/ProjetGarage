@@ -1,3 +1,4 @@
+<?php include "connexion.php"; ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -47,7 +48,6 @@
                 <select name="marque" id="marque-select" class="form-select" onchange="fetchModels()">
                     <option value=""><p>Sélectionner une marque</p></option>
                     <?php
-                        include_once "connexion.php";
                         $sql_marques = "SELECT * FROM Marque ORDER BY nom_marque";
                         $result_marques = $conn->query($sql_marques);
                         if ($result_marques->num_rows > 0) {
@@ -63,6 +63,17 @@
             <div class="col-md-4">
                 <select name="modele" id="modele-select" class="form-select">
                     <option value="">Sélectionner un modèle</option>
+                    <?php
+                        $sql_modeles = "SELECT * FROM Modele ORDER BY nom_modele";
+                        $result_modeles = $conn->query($sql_modeles);
+                        if ($result_modeles->num_rows > 0) {
+                            while ($row = $result_modeles->fetch_assoc()) {
+                                echo "<option value='{$row['id_modele']}'>{$row['nom_modele']}</option>";
+                            }
+                        } else {
+                            echo "<option>Aucune</option>";
+                        }
+                    ?>
                 </select>
             </div>
             <div class="col-md-4">
@@ -150,10 +161,7 @@
 
 
                 // Ajouter les conditions à la requête
-                if (count($conditions) > 0 && $verif == false) {
-                    $sql .= " WHERE " . implode(" AND ", $conditions);
-                }
-                if ($verif) {
+                if (count($conditions) > 0 && $verif == false || $verif = true)  {
                     $sql .= " WHERE " . implode(" AND ", $conditions);
                 }
 

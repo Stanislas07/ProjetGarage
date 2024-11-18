@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: ../form/formlogin.html"); // Rediriger vers la page de connexion si non autorisé
         }
     } else {
-        echo "Utilisateur non trouvé.";
+        header("Location: ../form/formlogin.html");
     }
 }
 ?>
