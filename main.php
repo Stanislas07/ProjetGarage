@@ -161,7 +161,7 @@
 
 
                 // Ajouter les conditions à la requête
-                if (count($conditions) > 0 && $verif == false || $verif = true)  {
+                if (count($conditions) > 0 && $verif == false || $verif == true)  {
                     $sql .= " WHERE " . implode(" AND ", $conditions);
                 }
 
